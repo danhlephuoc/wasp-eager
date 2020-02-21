@@ -1,0 +1,34 @@
+COMMON_FLAGS=-std=c++14 -O3 -fPIC -DNDEBUG 
+SRC_FOLDER=src/lp2cpp/
+
+all: executor
+
+executor: Executor.so
+
+Executor.so: $(SRC_FOLDER)Executor.cpp TupleWithReasons.o TupleWithoutReasons.o AuxiliaryMap.o PredicateSet.o Literal.o ConstantsManager.o Atom.o SharedFunctions.o InputDirector.o AspCore2InstanceBuilder.o 
+	g++ $(COMMON_FLAGS) -shared $(SRC_FOLDER)Executor.cpp TupleWithReasons.o TupleWithoutReasons.o AuxiliaryMap.o PredicateSet.o Literal.o ConstantsManager.o Atom.o SharedFunctions.o InputDirector.o  AspCore2InstanceBuilder.o -o Executor.so 
+
+TupleWithoutReasons.o: $(SRC_FOLDER)datastructures/TupleWithoutReasons.cpp $(SRC_FOLDER)datastructures/TupleWithoutReasons.h
+	g++ $(COMMON_FLAGS) -c $(SRC_FOLDER)datastructures/TupleWithoutReasons.cpp
+TupleWithReasons.o: $(SRC_FOLDER)datastructures/TupleWithReasons.cpp $(SRC_FOLDER)datastructures/TupleWithReasons.h
+	g++ $(COMMON_FLAGS) -c $(SRC_FOLDER)datastructures/TupleWithReasons.cpp
+AuxiliaryMap.o: $(SRC_FOLDER)datastructures/AuxiliaryMap.cpp $(SRC_FOLDER)datastructures/AuxiliaryMap.h
+	g++ $(COMMON_FLAGS) -c $(SRC_FOLDER)datastructures/AuxiliaryMap.cpp
+PredicateSet.o: $(SRC_FOLDER)datastructures/PredicateSet.cpp $(SRC_FOLDER)datastructures/PredicateSet.h
+	g++ $(COMMON_FLAGS) -c $(SRC_FOLDER)datastructures/PredicateSet.cpp
+Literal.o: $(SRC_FOLDER)language/Literal.cpp $(SRC_FOLDER)language/Literal.h
+	g++ $(COMMON_FLAGS) -c $(SRC_FOLDER)language/Literal.cpp
+ConstantsManager.o: $(SRC_FOLDER)utils/ConstantsManager.cpp $(SRC_FOLDER)utils/ConstantsManager.h
+	g++ $(COMMON_FLAGS) -c $(SRC_FOLDER)utils/ConstantsManager.cpp
+Atom.o: $(SRC_FOLDER)language/Atom.cpp ConstantsManager.o $(SRC_FOLDER)language/Atom.h
+	g++ $(COMMON_FLAGS) -c $(SRC_FOLDER)language/Atom.cpp
+SharedFunctions.o: $(SRC_FOLDER)utils/SharedFunctions.cpp $(SRC_FOLDER)utils/SharedFunctions.h
+	g++ $(COMMON_FLAGS) -c $(SRC_FOLDER)utils/SharedFunctions.cpp
+AspCore2InstanceBuilder.o: $(SRC_FOLDER)parsing/AspCore2InstanceBuilder.cpp $(SRC_FOLDER)parsing/AspCore2InstanceBuilder.h
+	g++ $(COMMON_FLAGS) -c $(SRC_FOLDER)parsing/AspCore2InstanceBuilder.cpp
+InputDirector.o: $(SRC_FOLDER)DLV2libs/input/InputDirector.cpp $(SRC_FOLDER)DLV2libs/input/InputDirector.h
+	g++ $(COMMON_FLAGS) -c $(SRC_FOLDER)DLV2libs/input/InputDirector.cpp
+
+clean:
+	rm -f *.o;
+	rm -f *.so
